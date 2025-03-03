@@ -4,6 +4,9 @@ Repository for COS 420 group project. This is the GitHub repository for the cons
 
 COLLABORATORS
 =============
-Wyatt McCurdy
-James Tedder
-Mandy Ho
+## Team Lead 
+- Wyatt McCurdy
+
+## Pair Programming Group 1
+- James Tedder
+- Mandy Ho
