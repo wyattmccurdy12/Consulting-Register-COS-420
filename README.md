@@ -5,3 +5,4 @@ Repository for COS 420 group project. This is the GitHub repository for the cons
 COLLABORATORS
 =============
 Wyatt McCurdy
+James Tedder
