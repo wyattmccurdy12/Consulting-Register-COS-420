@@ -10,3 +10,6 @@ COLLABORATORS
 ## Pair Programming Group 1
 - James Tedder
 - Mandy Ho
+
+## Pair Programming Group 1
+- Aubin Mugisha
