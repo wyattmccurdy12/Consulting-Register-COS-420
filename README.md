@@ -13,3 +13,4 @@ COLLABORATORS
 
 ## Pair Programming Group 2
 - Aubin Mugisha
+- Julian Edwards
