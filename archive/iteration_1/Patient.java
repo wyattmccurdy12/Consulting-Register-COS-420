@@ -9,11 +9,12 @@ public class Patient {
     private String nationalIdentificationNumber;
     private String address;
     private String sex;
+    private int age;
 
     // Constructor
     public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber, 
                    String healthInsuranceNumber, String nationalIdentificationNumber, 
-                   String address, String sex) {
+                   String address, String sex, int age) {
         this.patientId = patientId;
         this.dateOfBirth = dateOfBirth;
         this.name = name;
@@ -22,6 +23,7 @@ public class Patient {
         this.nationalIdentificationNumber = nationalIdentificationNumber;
         this.address = address;
         this.sex = sex;
+        this.age = age;
     }
 
     // Getters and Setters (optional, if needed)
@@ -88,4 +90,8 @@ public class Patient {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
+    public int getAge() {return age;}
+
+    public void setAge(int age) {this.age = age;}
 }
