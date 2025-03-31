@@ -1,46 +1,48 @@
+import java.util.Date;
+
 public class Visit {
     private String patientId;
     private String clinicId;
-    private String date;
+    private Date date;
     private String bloodPressure;
     private String pulse;
-    private String temperature;
-    private String weight;
+    private float temperature;
+    private float weight;
     private String respiration;
     private String conditionHistory;
     private String principalDiagnosis;
     private String additionalDiagnosis;
     private String treatmentGiven;
-    private String referred;
+    private boolean referred;
     private String outcomeOfReferral;
-    private String costOfTreatment;
+    private float costOfTreatment;
     private String remarks;
-    private String child;
+    private boolean child;
     private String childAttributes;
-    private String childTempForFever;
-    private String childRespirationForPneumonia;
-    private String childPalmarPallorForAnemia;
-    private String childPulseRateForStridor;
-    private String childPulseRateForMalaria;
-    private String childPulseRatePneumonia;
-    private String childBloodInStoolForDysentery;
-    private String childBulgingFontanelForInfection;
-    private String childElasticityOfSkinForDehydration;
-    private String childSkinRashes;
-    private String childReddeningOfCordForCordInfection;
-    private String childSignsOfConvulsionOrHistoryOfConvulsion;
-    private String childLethargy;
+    private boolean childTempForFever;
+    private boolean childRespirationForPneumonia;
+    private boolean childPalmarPallorForAnemia;
+    private boolean childPulseRateForStridor;
+    private boolean childPulseRateForMalaria;
+    private boolean childPulseRatePneumonia;
+    private boolean childBloodInStoolForDysentery;
+    private boolean childBulgingFontanelForInfection;
+    private boolean childElasticityOfSkinForDehydration;
+    private boolean childSkinRashes;
+    private boolean childReddeningOfCordForCordInfection;
+    private boolean childSignsOfConvulsionOrHistoryOfConvulsion;
+    private boolean childLethargy;
 
     // Constructor
-    public Visit(String patientId, String clinicId, String date, String bloodPressure, String pulse, String temperature,
-                 String weight, String respiration, String conditionHistory, String principalDiagnosis,
-                 String additionalDiagnosis, String treatmentGiven, String referred, String outcomeOfReferral,
-                 String costOfTreatment, String remarks, String child, String childAttributes, String childTempForFever,
-                 String childRespirationForPneumonia, String childPalmarPallorForAnemia, String childPulseRateForStridor,
-                 String childPulseRateForMalaria, String childPulseRatePneumonia, String childBloodInStoolForDysentery,
-                 String childBulgingFontanelForInfection, String childElasticityOfSkinForDehydration, String childSkinRashes,
-                 String childReddeningOfCordForCordInfection, String childSignsOfConvulsionOrHistoryOfConvulsion,
-                 String childLethargy) {
+    public Visit(String patientId, String clinicId, Date date, String bloodPressure, String pulse, float temperature,
+                 float weight, String respiration, String conditionHistory, String principalDiagnosis,
+                 String additionalDiagnosis, String treatmentGiven, boolean referred, String outcomeOfReferral,
+                 float costOfTreatment, String remarks, boolean child, String childAttributes, boolean childTempForFever,
+                 boolean childRespirationForPneumonia, boolean childPalmarPallorForAnemia, boolean childPulseRateForStridor,
+                 boolean childPulseRateForMalaria, boolean childPulseRatePneumonia, boolean childBloodInStoolForDysentery,
+                 boolean childBulgingFontanelForInfection, boolean childElasticityOfSkinForDehydration, boolean childSkinRashes,
+                 boolean childReddeningOfCordForCordInfection, boolean childSignsOfConvulsionOrHistoryOfConvulsion,
+                 boolean childLethargy) {
         this.patientId = patientId;
         this.clinicId = clinicId;
         this.date = date;

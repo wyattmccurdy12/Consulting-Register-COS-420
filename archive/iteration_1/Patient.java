@@ -1,6 +1,8 @@
+import java.util.Date;
+
 public class Patient {
     private String patientId;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String name;
     private String outPatientNumber;
     private String healthInsuranceNumber;
@@ -9,7 +11,7 @@ public class Patient {
     private String sex;
 
     // Constructor
-    public Patient(String patientId, String dateOfBirth, String name, String outPatientNumber, 
+    public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber, 
                    String healthInsuranceNumber, String nationalIdentificationNumber, 
                    String address, String sex) {
         this.patientId = patientId;
@@ -31,11 +33,11 @@ public class Patient {
         this.patientId = patientId;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
