@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.List;
 
 public abstract class Patient {
     private String patientId;
@@ -11,11 +12,12 @@ public abstract class Patient {
     private String sex;
     private int age;
     private String motherId;
+    private List<Record> records;
 
     // Constructor
     public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber, 
                    String healthInsuranceNumber, String nationalIdentificationNumber, 
-                   String address, String sex, int age) {
+                   String address, String sex, int age, String motherId, List<Record> records) {
         this.patientId = patientId;
         this.dateOfBirth = dateOfBirth;
         this.name = name;
@@ -25,6 +27,8 @@ public abstract class Patient {
         this.address = address;
         this.sex = sex;
         this.age = age;
+        this.motherId = motherId;
+        this.records = records;
     }
 
     // Getters and Setters (optional, if needed)
@@ -102,5 +106,13 @@ public abstract class Patient {
 
     public void setMotherId(String motherId) {
         this.motherId = motherId;
+    }
+
+    public List<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<Record> records) {
+        this.records = records;
     }
 }
