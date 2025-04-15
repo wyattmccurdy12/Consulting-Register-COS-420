@@ -1,6 +1,6 @@
 import java.util.Date;
 
-public class Patient {
+public abstract class Patient {
     private String patientId;
     private Date dateOfBirth;
     private String name;
@@ -10,6 +10,7 @@ public class Patient {
     private String address;
     private String sex;
     private int age;
+    private String motherId;
 
     // Constructor
     public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber, 
@@ -94,4 +95,12 @@ public class Patient {
     public int getAge() {return age;}
 
     public void setAge(int age) {this.age = age;}
+
+    public String getMotherId() {
+        return motherId;
+    }
+
+    public void setMotherId(String motherId) {
+        this.motherId = motherId;
+    }
 }
