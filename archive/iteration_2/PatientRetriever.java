@@ -39,6 +39,26 @@ public class PatientRetriever {
         return null;
     }
 
+    /**
+     * Retrieves all patients from the CSV file.
+     *
+     * @return A list of Patient objects.
+     */
+    public List<Patient> retrieveAllPatients() {
+        List<Patient> patients = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(patientCsvPath))) {
+            String line;
+            br.readLine(); // Skip the header line
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                patients.add(parsePatient(fields));
+            }
+        } catch (IOException | ParseException e) {
+            System.err.println("Error reading patient records: " + e.getMessage());
+        }
+        return patients;
+    }
+
     private Patient parsePatient(String[] fields) throws ParseException {
         String patientId = fields[0];
         Date dateOfBirth = new SimpleDateFormat("M/d/yyyy").parse(fields[1]);
