@@ -1,0 +1,2 @@
+﻿patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId,records
+CS126414917,7/9/1990,Carl,15990,IS30947,NI03849,4 Test Road,M,35,CS126414915,RE39485
