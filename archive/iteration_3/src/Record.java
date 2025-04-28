@@ -1,3 +1,5 @@
+package src;
+
 /**
  * @author mandyho
  * abstract record class

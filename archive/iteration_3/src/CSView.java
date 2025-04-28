@@ -1,9 +1,10 @@
+package src;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 /**
  * CSView is responsible for creating and managing the graphical user interface (GUI)

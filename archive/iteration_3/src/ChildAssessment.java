@@ -1,3 +1,4 @@
+package src;
 public class ChildAssessment {
     private String childAttributes;
     private boolean tempForFever;
