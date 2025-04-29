@@ -1,13 +1,15 @@
 package src;
-import java.io.FileOutputStream;
+
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import javax.print.attribute.standard.MediaSize.Other;
+import java.util.List;
+import java.util.Map;
 
 public class Clinic {
     private String clinicId;
@@ -15,8 +17,9 @@ public class Clinic {
     private String chpsZone;
     private String subDistrict;
     private String district;
-    private ArrayList<Patient> patients;
-    private ArrayList<Visit> visits;
+    private List<Patient> patients;
+    private List<Visit> visits;
+    private Map<String, Patient> patientMap;
 
     // Constructor
     public Clinic(String clinicId, String facility, String chpsZone, String subDistrict, String district) {
@@ -25,176 +28,159 @@ public class Clinic {
         this.chpsZone = chpsZone;
         this.subDistrict = subDistrict;
         this.district = district;
+        this.patients = new ArrayList<>();
+        this.visits = new ArrayList<>();
+        this.patientMap = new HashMap<>();
     }
 
-    // Getters and Setters (optional, if needed)
-    public String getClinicId() {
-        return clinicId;
-    }
-
-    public void setClinicId(String clinicId) {
-        this.clinicId = clinicId;
-    }
-
-    public String getFacility() {
-        return facility;
-    }
-
-    public void setFacility(String facility) {
-        this.facility = facility;
-    }
-
-    public String getChpsZone() {
-        return chpsZone;
-    }
-
-    public void setChpsZone(String chpsZone) {
-        this.chpsZone = chpsZone;
-    }
-
-    public String getSubDistrict() {
-        return subDistrict;
-    }
-
-    public void setSubDistrict(String subDistrict) {
-        this.subDistrict = subDistrict;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
+    // Add a new patient to the clinic
     public void addPatient(Patient patient) {
         patients.add(patient);
+        patientMap.put(patient.getPatientId(), patient);
     }
+
+    // Record a new visit
+    public void addVisit(Visit visit) {
+        visits.add(visit);
+    }
+
     /**
-     * Creates a Morbidity report from the information collected during the months visits.
+     * Generates an outpatient morbidity report for the current month and writes it to a CSV file.
      */
     public void generateMorbidityReport() {
         String[] diseases = {"Acute Ear infection","Acute Eye infection","Acute Psychosis",
-        "Acute Urinary Tract Infection","AFP (Polio)","All Other Diseases","Anaemia",
-        "Aneamia in Pregnancy","Asthma","Buruli Ulcer","Cataract","Chicken Pox","Cholera","CSM",
-        "Dental Caries","Diabetes Mellitus","Diarrhoea Diseases","Diphtheria","Domestic Violence",
-        "Epilepsy","Genital Ulcer Disease","Gonorrhoea","Guinea worm","Gynaecological conditions",
-        "HIV/AIDS","Home Accidents and Injuries","Home Poisonings","Hypertension",
-        "Infectious Hepatitis","Intestinal worms","Kidney Related Diseases","Leprosy","Liver Diseases",
-        "Malaria in Pregnancy Lab Confirmed","Malaria in Pregnancy Non-Lab Confirmed","Malnutrition",
-        "Measles","Mumps","Neonatal Tetanus","Neurosis","Occupational Injuries","Occupational Poisonings",
-        "Onchocercaisis","Other Animal Bites","Other ARI(Acute Respiratory Infection)","Other Cardiac Diseases",
-        "Other Disease of the Female Reproductive System","Other Disease of the Male Reproductive System",
-        "Other Meningitis","Other Nutritional Diseases","Other oral Conditions","Pertussis","Pneumonia",
-        "Pregnancy and Related Complications","PUO (not Malaria)","Rheumatism and Joint Paints",
-        "Road Traffic Accidents","Schistosomiasis (Bilharzia)","Septicaemia","Severe Malaria Lab Confirmed",
-        "Severe Malaria Non-Lab Confirmed","Sexual abuse","Sickle cell Disease","Simple Malaria Lab Confirmed",
-        "Simple Malaria Non-Lab Confirmed","Skin Diseases & Ulcers","Snake Bite","Substance Abuse","Tetanus",
-        "Trachoma","Tuberculosis","Typhoid/Enteric Fever(Typhoid)","Urethral Discharge","Vaginal Discharge",
-        "Yaws","Yellow Fever","Re-Attendance","Referrals Out"};
-        Calendar cal = Calendar.getInstance(null);
-        int month = cal.get(Calendar.MONTH);
-        int year = cal.get(Calendar.YEAR);
-        String fileName = "Morbidity_Report_" + month + "-" + year + ".csv";
-       
-        int[][] maleData = new int[diseases.length][11]; // FIXME: based on diseases, might not be problem
+            "Acute Urinary Tract Infection","AFP (Polio)","All Other Diseases","Anaemia",
+            "Aneamia in Pregnancy","Asthma","Buruli Ulcer","Cataract","Chicken Pox","Cholera","CSM",
+            "Dental Caries","Diabetes Mellitus","Diarrhoea Diseases","Diphtheria","Domestic Violence",
+            "Epilepsy","Genital Ulcer Disease","Gonorrhoea","Guinea worm","Gynaecological conditions",
+            "HIV/AIDS","Home Accidents and Injuries","Home Poisonings","Hypertension",
+            "Infectious Hepatitis","Intestinal worms","Kidney Related Diseases","Leprosy","Liver Diseases",
+            "Malaria in Pregnancy Lab Confirmed","Malaria in Pregnancy Non-Lab Confirmed","Malnutrition",
+            "Measles","Mumps","Neonatal Tetanus","Neurosis","Occupational Injuries","Occupational Poisonings",
+            "Onchocercaisis","Other Animal Bites","Other ARI(Acute Respiratory Infection)","Other Cardiac Diseases",
+            "Other Disease of the Female Reproductive System","Other Disease of the Male Reproductive System",
+            "Other Meningitis","Other Nutritional Diseases","Other oral Conditions","Pertussis","Pneumonia",
+            "Pregnancy and Related Complications","PUO (not Malaria)","Rheumatism and Joint Paints",
+            "Road Traffic Accidents","Schistosomiasis (Bilharzia)","Septicaemia","Severe Malaria Lab Confirmed",
+            "Severe Malaria Non-Lab Confirmed","Sexual abuse","Sickle cell Disease","Simple Malaria Lab Confirmed",
+            "Simple Malaria Non-Lab Confirmed","Skin Diseases & Ulcers","Snake Bite","Substance Abuse","Tetanus",
+            "Trachoma","Tuberculosis","Typhoid/Enteric Fever(Typhoid)","Urethral Discharge","Vaginal Discharge",
+            "Yaws","Yellow Fever","Re-Attendance","Referrals Out"};
+
+        // Counters for male and female patients by disease and age group
+        int[][] maleData = new int[diseases.length][11];
         int[][] femaleData = new int[diseases.length][11];
-        for (Visit visit: visits) {
-            if (visit.getDate().getMonth() == month && visit.getDate().getYear() == year) { //FIXME: problem with the date class
-                int i = 0;
-                Boolean notFound = true;
-                while (i < diseases.length && notFound) { // FIXME: not sure if we want diseases in and array could be a map
-                    if (diseases[i] == visit.getPrincipalDiagnosis()){ // FIXME: visit connection not finalized
-                        notFound = false;
-                    } else {
-                        i++;
-                    }
+
+        // Determine current report month and year
+        Calendar now = Calendar.getInstance();
+        int reportMonth = now.get(Calendar.MONTH);
+        int reportYear = now.get(Calendar.YEAR);
+
+        // Aggregate visit data
+        Calendar visitCal = Calendar.getInstance();
+        for (Visit visit : visits) {
+            Date date = visit.getDate();
+            visitCal.setTime(date);
+            int vMonth = visitCal.get(Calendar.MONTH);
+            int vYear = visitCal.get(Calendar.YEAR);
+            if (vMonth == reportMonth && vYear == reportYear) {
+                String diag = visit.getPrincipalDiagnosis();
+                int i = Arrays.asList(diseases).indexOf(diag);
+                if (i < 0) {
+                    continue; // skip unknown diagnoses
                 }
-                int j;
-                int age = visit.getPatient().getAge(); // FIXME: probably doesn't work
-                if (age >= 70) {
-                    j = 10;
-                } else if (age >= 60) {
-                    j = 9;
-                } else if (age >= 50) {
-                    j = 8;
-                } else if (age >= 35) {
-                    j = 7;
-                } else if (age >= 20) {
-                    j = 6;
-                } else if (age >= 18) {
-                    j = 5;
-                } else if (age >= 15) {
-                    j = 4;
-                } else if (age >= 10) {
-                    j = 3;
-                } else if (age >= 5) {
-                    j = 2;
-                } else if (age >= 1) {
-                    j = 1;
+                Patient p = patientMap.get(visit.getPatientId());
+                if (p == null) {
+                    continue; // skip visits without patient info
+                }
+                int ageIndex = getAgeIndex(p.getAge());
+                if ("Male".equalsIgnoreCase(p.getSex())) {
+                    maleData[i][ageIndex]++;
                 } else {
-                    j = 0;
-                }
-
-                String sex = visit.getPatient().getSex(); // FIXME: probably doesn't work
-                if (sex.equals("Male")) {
-                    maleData[i][j]++;
-                } else {
-                    femaleData[i][j]++;
-                }
-
-                StringBuilder sb = new StringBuilder();
-                sb.append("Month").append(",").append(month).append("\n");
-
-                sb.append("Facility Name").append(",").append(facility).append("\n");
-                sb.append("District").append(",").append(district).append("\n");
-                sb.append("Region").append(",").append(subDistrict).append("\n");
-
-                sb.append("\n");
-
-                sb.append("Disease\t").append(",").append("Male <1").append(",").append("Male 1-4").append(",").append("Male 5-9").append(",")
-                .append("Male 10-14").append(",").append("Male 15-17").append(",").append("Male 18-19").append(",").append("Male 20-34").append(",")
-                .append("Male 35-49").append(",").append("Male 50-59").append(",").append("Male 60-69").append(",").append("Male 70+").append(",")
-                .append("Male Total").append(",");
-
-                sb.append("Female <1").append(",").append("Female 1-4").append(",").append("Female 5-9").append(",")
-                .append("Female 10-14").append(",").append("Female 15-17").append(",").append("Female 18-19").append(",").append("Female 20-34").append(",")
-                .append("Female 35-49").append(",").append("Female 50-59").append(",").append("Female 60-69").append(",").append("Female 70+").append(",")
-                .append("Female Total").append(",").append("\n");
-                for(int k = 0; k < diseases.length; k++) {
-                    sb.append(diseases[k]).append(",");
-                    int maleTotal = 0;
-                    for(int l = 0; l < 11; l++) {
-                        sb.append(maleData[k][l]).append(",");
-                        maleTotal += maleData[k][l];
-                    }
-                    sb.append(maleTotal).append(",");
-                    int femaleTotal = 0;
-                    for(int m = 0; m < 11; m++) {
-                        sb.append(femaleData[k][m]).append(",");
-                        femaleTotal += femaleData[k][m];
-                    }
-                    sb.append(femaleTotal).append("\n");
-                }
-                sb.append("Total").append(",");
-                for (int x = 0; x < 11; x++) {
-                    int ageTotal = 0;
-                    for (int y = 0; y < diseases.length; y++) {
-                        ageTotal += maleData[y][x];
-                    }
-                    sb.append(ageTotal).append(",");
-                }
-                sb.append(",");
-                for (int g = 0; g < 11; g++) {
-                    ageTotal = 0;
-                    for (int h = 0; h < diseases.length; h++) {
-                        ageTotal += femaleData[h][g];
-                    }
-                    sb.append(ageTotal).append(",");
+                    femaleData[i][ageIndex]++;
                 }
             }
         }
-        
+
+        // Prepare output filename
+        String fileName = "Morbidity_Report_" + (reportMonth + 1) + "-" + reportYear + ".csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            // Header information
+            writer.println("Month," + (reportMonth + 1));
+            writer.println("Clinic ID," + clinicId);
+            writer.println("CHPS Zone," + chpsZone);
+            writer.println("Facility Name," + facility);
+            writer.println("District," + district);
+            writer.println("Region," + subDistrict);
+            writer.println();
+
+            // Column headers
+            StringBuilder header = new StringBuilder("Disease");
+            for (int j = 0; j < 11; j++) {
+                header.append(",Male ").append(getAgeRange(j));
+            }
+            header.append(",Male Total");
+            for (int j = 0; j < 11; j++) {
+                header.append(",Female ").append(getAgeRange(j));
+            }
+            header.append(",Female Total");
+            writer.println(header.toString());
+
+            // Data rows
+            for (int k = 0; k < diseases.length; k++) {
+                StringBuilder row = new StringBuilder(diseases[k]);
+                int maleTotal = 0;
+                for (int l = 0; l < 11; l++) {
+                    int count = maleData[k][l];
+                    row.append(",").append(count);
+                    maleTotal += count;
+                }
+                row.append(",").append(maleTotal);
+
+                int femaleTotal = 0;
+                for (int l = 0; l < 11; l++) {
+                    int count = femaleData[k][l];
+                    row.append(",").append(count);
+                    femaleTotal += count;
+                }
+                row.append(",").append(femaleTotal);
+                writer.println(row.toString());
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing morbidity report: " + e.getMessage());
+        }
+    }
+
+    // Map patient age to index (0=<1, 1=1-4, 2=5-9, ..., 10=70+)
+    private int getAgeIndex(int age) {
+        if (age < 1) return 0;
+        if (age < 5) return 1;
+        if (age < 10) return 2;
+        if (age < 15) return 3;
+        if (age < 18) return 4;
+        if (age < 20) return 5;
+        if (age < 35) return 6;
+        if (age < 50) return 7;
+        if (age < 60) return 8;
+        if (age < 70) return 9;
+        return 10;
+    }
+
+    // Return a string label for each age index
+    private String getAgeRange(int index) {
+        switch (index) {
+            case 0: return "<1";
+            case 1: return "1-4";
+            case 2: return "5-9";
+            case 3: return "10-14";
+            case 4: return "15-17";
+            case 5: return "18-19";
+            case 6: return "20-34";
+            case 7: return "35-49";
+            case 8: return "50-59";
+            case 9: return "60-69";
+            case 10: return "70+";
+            default: return "";
+        }
     }
 }
