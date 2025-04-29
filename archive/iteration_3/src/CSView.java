@@ -1,102 +1,341 @@
 package src;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.ArrayList;
 
 /**
- * CSView is responsible for creating and managing the graphical user interface (GUI)
- * for the Consulting Register application. It interacts with the CSController to
- * retrieve patient information based on user input.
+ * CSView manages the GUI for the Consulting Register application.
+ * It lets you search for patients, add new patients, view details, and record visits.
  */
 public class CSView {
-    private CSController controller;
+    private final CSController controller;
+    private final SimpleDateFormat df  = new SimpleDateFormat("M/d/yyyy");
+    private final SimpleDateFormat dtf = new SimpleDateFormat("M/d/yyyy HH:mm:ss");  // includes time
+    private final JFrame frame;
+    private final JTextField idField;
+    private final JTextField nameField;
+    private final JTextField dobField;
+    private final JLabel statusLabel;
+    private final JButton viewBtn;
+    private final JButton recordBtn;
+    private final Patient[] current = new Patient[1];
+    private final Font font = new Font("SansSerif", Font.PLAIN, 14);
 
     /**
-     * Constructs a CSView instance and initializes the GUI components.
-     *
-     * @param controller The controller responsible for handling business logic and data retrieval.
+     * Constructs and shows the main Consulting Register window.
+     * @param controller the controller handling business logic
      */
     public CSView(CSController controller) {
         this.controller = controller;
 
-        // Create the frame
-        JFrame frame = new JFrame("Patient Search");
+        frame = new JFrame("Consulting Register");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
-        frame.setLayout(new FlowLayout());
+        frame.setMinimumSize(new Dimension(800, 500));
+        frame.setLayout(new BorderLayout(10, 10));
 
-        // Create components
-        JLabel label = new JLabel("Enter Patient ID:");
-        JTextField textField = new JTextField(20);
-        JButton submitButton = new JButton("Submit");
-        JLabel resultLabel = new JLabel("");
+        // --- Top: Search Panel ---
+        JPanel searchPanel = new JPanel(new GridBagLayout());
+        searchPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(),
+            "Find or Add Patient",
+            TitledBorder.LEFT, TitledBorder.TOP,
+            font.deriveFont(Font.BOLD, 14)
+        ));
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 8, 5, 8);
+        c.anchor = GridBagConstraints.WEST;
 
-        // Add components to frame
-        frame.add(label);
-        frame.add(textField);
-        frame.add(submitButton);
-        frame.add(resultLabel);
+        // Patient ID
+        c.gridx = 0; c.gridy = 0;
+        JLabel lblId = new JLabel("Patient ID:"); lblId.setFont(font);
+        searchPanel.add(lblId, c);
+        idField = new JTextField();
+        idField.setFont(font);
+        Dimension idDim = new Dimension(120, 24);
+        idField.setPreferredSize(idDim);
+        idField.setMinimumSize(idDim);
+        c.gridx = 1;
+        searchPanel.add(idField, c);
 
-        JButton viewRecordsButton = new JButton("View Patient Information");
-        frame.add(viewRecordsButton);
+        // Name
+        c.gridx = 2;
+        JLabel lblName = new JLabel("Name:"); lblName.setFont(font);
+        searchPanel.add(lblName, c);
+        nameField = new JTextField();
+        nameField.setFont(font);
+        Dimension nameDim = new Dimension(180, 24);
+        nameField.setPreferredSize(nameDim);
+        nameField.setMinimumSize(nameDim);
+        c.gridx = 3;
+        searchPanel.add(nameField, c);
 
-        // Add action listener to the button
-        submitButton.addActionListener(new ActionListener() {
-            /**
-             * Handles the action event triggered when the submit button is clicked.
-             * Retrieves the patient ID from the text field, fetches the patient information
-             * using the controller, and displays the result in the result label.
-             *
-             * @param e The action event triggered by the button click.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String patientId = textField.getText();
-                String result = controller.getPatientInfo(patientId);
-                resultLabel.setText(result);
-            }
-        });
+        // DOB
+        c.gridx = 4;
+        JLabel lblDob = new JLabel("DOB (M/d/yyyy):"); lblDob.setFont(font);
+        searchPanel.add(lblDob, c);
+        dobField = new JTextField();
+        dobField.setFont(font);
+        Dimension dobDim = new Dimension(120, 24);
+        dobField.setPreferredSize(dobDim);
+        dobField.setMinimumSize(dobDim);
+        c.gridx = 5;
+        searchPanel.add(dobField, c);
 
-        viewRecordsButton.addActionListener(new ActionListener() {
-            /**
-             * Handles the action event triggered when the "View Patient Information" button is clicked.
-             * Displays detailed information for the currently retrieved patient in a JTable.
-             *
-             * @param e The action event triggered by the button click.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String patientId = textField.getText();
-                Patient patient = controller.getPatientDetails(patientId);
+        // Buttons: Search, Clear, Add Patient
+        JButton searchBtn = new JButton("Search"); searchBtn.setFont(font);
+        JButton clearBtn  = new JButton("Clear");  clearBtn.setFont(font);
+        JButton addBtn    = new JButton("Add Patient"); addBtn.setFont(font);
+        c.gridx = 6; searchPanel.add(searchBtn, c);
+        c.gridx = 7; searchPanel.add(clearBtn, c);
+        c.gridx = 8; searchPanel.add(addBtn, c);
 
-                if (patient != null) {
-                    String[] columnNames = {"Field", "Value"};
-                    DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        frame.add(searchPanel, BorderLayout.NORTH);
 
-                    tableModel.addRow(new Object[]{"Patient ID", patient.getPatientId()});
-                    tableModel.addRow(new Object[]{"Name", patient.getName()});
-                    tableModel.addRow(new Object[]{"Date of Birth", patient.getDateOfBirth()});
-                    tableModel.addRow(new Object[]{"Age", patient.getAge()});
-                    tableModel.addRow(new Object[]{"Address", patient.getAddress()});
-                    tableModel.addRow(new Object[]{"Sex", patient.getSex()});
-                    tableModel.addRow(new Object[]{"Mother ID", patient.getMotherId()});
+        // --- Center: Status Bar ---
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        statusLabel = new JLabel(" ");
+        statusLabel.setFont(font);
+        statusPanel.add(statusLabel);
+        frame.add(statusPanel, BorderLayout.CENTER);
 
-                    JTable table = new JTable(tableModel);
-                    JScrollPane scrollPane = new JScrollPane(table);
-                    JFrame tableFrame = new JFrame("Patient Information");
-                    tableFrame.setSize(400, 300);
-                    tableFrame.add(scrollPane);
-                    tableFrame.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "No patient found with ID: " + patientId, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        // --- Bottom: Actions Panel ---
+        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        actionsPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(),
+            "Actions",
+            TitledBorder.LEFT, TitledBorder.TOP,
+            font.deriveFont(Font.BOLD, 14)
+        ));
+        viewBtn   = new JButton("View Details"); viewBtn.setFont(font);
+        recordBtn = new JButton("Record Visit"); recordBtn.setFont(font);
+        viewBtn.setEnabled(false);
+        recordBtn.setEnabled(false);
+        actionsPanel.add(viewBtn);
+        actionsPanel.add(recordBtn);
+        frame.add(actionsPanel, BorderLayout.SOUTH);
 
-        // Make the frame visible
+        // --- Event wiring ---
+        searchBtn.addActionListener(e -> onSearch());
+        clearBtn .addActionListener(e -> onClear());
+        addBtn   .addActionListener(e -> onAddPatient());
+        viewBtn  .addActionListener(e -> onViewDetails());
+        recordBtn.addActionListener(e -> onRecordVisit());
+
+        // --- Pack, lock minimum size, and display ---
+        frame.pack();
+        frame.setMinimumSize(frame.getSize());      // lock the packed size as minimum
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    /** Search by ID or Name+DOB and update the status bar and actions. */
+    private void onSearch() {
+        Patient p = null;
+        try {
+            Date dob = dobField.getText().isBlank() ? null : df.parse(dobField.getText());
+            p = controller.retrievePatient(idField.getText(), nameField.getText(), dob);
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(frame, "Bad DOB format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        current[0] = p;
+        if (p != null) {
+            statusLabel.setText("✔ Found patient: " + p.getName());
+            viewBtn.setEnabled(true);
+            recordBtn.setEnabled(true);
+        } else {
+            statusLabel.setText("✖ No patient found");
+            viewBtn.setEnabled(false);
+            recordBtn.setEnabled(false);
+        }
+    }
+
+    /** Clear all search fields and reset the UI state. */
+    private void onClear() {
+        idField.setText("");
+        nameField.setText("");
+        dobField.setText("");
+        statusLabel.setText(" ");
+        current[0] = null;
+        viewBtn.setEnabled(false);
+        recordBtn.setEnabled(false);
+    }
+
+    /** Show a dialog to add a completely new patient to the system. */
+    private void onAddPatient() {
+        JDialog dlg = new JDialog(frame, "Add New Patient", true);
+        dlg.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5,5,5,5);
+        c.anchor = GridBagConstraints.WEST;
+
+        String[] labels = {
+            "Patient ID:", "Name:", "DOB (M/d/yyyy):", "Outpatient No:",
+            "Health Ins. No:", "National ID No:", "Address:", "Sex:", "Age:", "Mother ID:"
+        };
+        JTextField[] fields = new JTextField[labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            c.gridx = 0; c.gridy = i;
+            JLabel lbl = new JLabel(labels[i]); lbl.setFont(font);
+            dlg.add(lbl, c);
+
+            c.gridx = 1;
+            fields[i] = new JTextField();
+            fields[i].setFont(font);
+            fields[i].setPreferredSize(new Dimension(180, 24));
+            dlg.add(fields[i], c);
+        }
+
+        JButton saveBtn = new JButton("Save"); saveBtn.setFont(font);
+        c.gridx = 0; c.gridy = labels.length; c.gridwidth = 2;
+        dlg.add(saveBtn, c);
+
+        saveBtn.addActionListener(e -> {
+            try {
+                String id     = fields[0].getText();
+                String name   = fields[1].getText();
+                Date dob      = df.parse(fields[2].getText());
+                String outNo  = fields[3].getText();
+                String insNo  = fields[4].getText();
+                String natNo  = fields[5].getText();
+                String addr   = fields[6].getText();
+                String sex    = fields[7].getText();
+                int age       = Integer.parseInt(fields[8].getText());
+                String mother = fields[9].getText();
+
+                Patient p = new GeneralPatient(
+                  id, dob, name, outNo, insNo, natNo,
+                  addr, sex, age, mother, new ArrayList<>()
+                );
+
+                boolean ok = controller.addPatient(p);
+                JOptionPane.showMessageDialog(
+                  dlg,
+                  ok ? "Patient added." : "Error adding patient.",
+                  ok ? "Success" : "Error",
+                  ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
+                );
+                if (ok) dlg.dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                  dlg, "Invalid input: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        dlg.pack();
+        dlg.setLocationRelativeTo(frame);
+        dlg.setVisible(true);
+    }
+
+    /** Display patient details and past visits in a table dialog. */
+    private void onViewDetails() {
+        if (current[0] == null) {
+            JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        Patient p = current[0];
+        DefaultTableModel dm = new DefaultTableModel(new String[]{"Field","Value"}, 0);
+        dm.addRow(new Object[]{"ID", p.getPatientId()});
+        dm.addRow(new Object[]{"Name", p.getName()});
+        dm.addRow(new Object[]{"DOB", df.format(p.getDateOfBirth())});
+        dm.addRow(new Object[]{"Age", p.getAge()});
+        dm.addRow(new Object[]{"Address", p.getAddress()});
+        dm.addRow(new Object[]{"Sex", p.getSex()});
+        dm.addRow(new Object[]{"Mother ID", p.getMotherId()});
+        for (Visit v : controller.getVisitsForPatient(p.getPatientId())) {
+            dm.addRow(new Object[]{
+                "— Visit on",
+                dtf.format(v.getDate())  // now shows real date+time
+            });
+            dm.addRow(new Object[]{"   Diagnosis", v.getPrincipalDiagnosis()});
+            dm.addRow(new Object[]{"   Treatment", v.getTreatmentGiven()});
+        }
+
+        JTable table = new JTable(dm);
+        table.setFont(font);
+        table.setRowHeight(24);
+        JScrollPane sp = new JScrollPane(table);
+        sp.setPreferredSize(new Dimension(600, 300));
+        JOptionPane.showMessageDialog(frame, sp, "Patient Details & Visits", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /** Open a dialog to record a new visit for the currently loaded patient. */
+    private void onRecordVisit() {
+        if (current[0] == null) {
+            JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        JDialog dlg = new JDialog(frame, "Record Visit", true);
+        dlg.setLayout(new GridLayout(0,2,5,5));
+        dlg.setMinimumSize(new Dimension(400,400));
+
+        String[] labels = {
+          "Blood Pressure:", "Pulse:", "Temperature:", "Weight:", "Respiration:",
+          "History:", "Diagnosis:", "Addl Diagnosis:", "Treatment:",
+          "Referred? (true/false):", "Outcome Of Referral:", "Cost:", "Remarks:"
+        };
+        JTextField[] fields = new JTextField[labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            JLabel lbl = new JLabel(labels[i]); lbl.setFont(font);
+            dlg.add(lbl);
+            fields[i] = new JTextField();
+            fields[i].setFont(font);
+            dlg.add(fields[i]);
+        }
+
+        JButton save = new JButton("Save"); save.setFont(font);
+        dlg.add(new JLabel());
+        dlg.add(save);
+
+        save.addActionListener(ae -> {
+            try {
+                Visit v = new Visit(
+                  current[0].getPatientId(),
+                  "CLINIC1",
+                  new Date(),
+                  fields[0].getText(),
+                  fields[1].getText(),
+                  Float.parseFloat(fields[2].getText()),
+                  Float.parseFloat(fields[3].getText()),
+                  fields[4].getText(),
+                  fields[5].getText(),
+                  fields[6].getText(),
+                  fields[7].getText(),
+                  fields[8].getText(),
+                  Boolean.parseBoolean(fields[9].getText()),
+                  fields[10].getText(),
+                  Float.parseFloat(fields[11].getText()),
+                  fields[12].getText()
+                );
+                boolean ok = controller.recordVisit(v);
+                JOptionPane.showMessageDialog(
+                  dlg,
+                  ok ? "Saved!" : "Error saving",
+                  ok ? "Success" : "Error",
+                  ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
+                );
+                if (ok) dlg.dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                  dlg, "Invalid input: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        dlg.pack();
+        dlg.setLocationRelativeTo(frame);
+        dlg.setVisible(true);
+    }
+
+    /** Launches the application. */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new CSView(new CSController()));
     }
 }
