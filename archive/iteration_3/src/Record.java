@@ -1,5 +1,3 @@
-package src;
-
 /**
  * @author mandyho
  * abstract record class
@@ -10,8 +8,8 @@ public abstract class Record {
     protected Clinic clinic;
     protected Visit visit;
 
-    public Record (String recordId, Patient patient, Clinic clinic, Visit visit) {
-        this.recordId = recordId;
+    public Record(Patient patient, Clinic clinic, Visit visit) {
+        this.recordId = IDGenerator.getInstance().generateRecordId();
         this.patient = patient;
         this.clinic = clinic;
         this.visit = visit;
