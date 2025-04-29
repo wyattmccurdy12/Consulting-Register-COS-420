@@ -1,5 +1,6 @@
 package src;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.io.File;
 
 public class Clinic {
     private String clinicId;
@@ -48,59 +51,19 @@ public class Clinic {
      * Generates an outpatient morbidity report for the current month and writes it to a CSV file.
      */
     public void generateMorbidityReport() {
-        String[] diseases = {"Acute Ear infection","Acute Eye infection","Acute Psychosis",
-            "Acute Urinary Tract Infection","AFP (Polio)","All Other Diseases","Anaemia",
-            "Aneamia in Pregnancy","Asthma","Buruli Ulcer","Cataract","Chicken Pox","Cholera","CSM",
-            "Dental Caries","Diabetes Mellitus","Diarrhoea Diseases","Diphtheria","Domestic Violence",
-            "Epilepsy","Genital Ulcer Disease","Gonorrhoea","Guinea worm","Gynaecological conditions",
-            "HIV/AIDS","Home Accidents and Injuries","Home Poisonings","Hypertension",
-            "Infectious Hepatitis","Intestinal worms","Kidney Related Diseases","Leprosy","Liver Diseases",
-            "Malaria in Pregnancy Lab Confirmed","Malaria in Pregnancy Non-Lab Confirmed","Malnutrition",
-            "Measles","Mumps","Neonatal Tetanus","Neurosis","Occupational Injuries","Occupational Poisonings",
-            "Onchocercaisis","Other Animal Bites","Other ARI(Acute Respiratory Infection)","Other Cardiac Diseases",
-            "Other Disease of the Female Reproductive System","Other Disease of the Male Reproductive System",
-            "Other Meningitis","Other Nutritional Diseases","Other oral Conditions","Pertussis","Pneumonia",
-            "Pregnancy and Related Complications","PUO (not Malaria)","Rheumatism and Joint Paints",
-            "Road Traffic Accidents","Schistosomiasis (Bilharzia)","Septicaemia","Severe Malaria Lab Confirmed",
-            "Severe Malaria Non-Lab Confirmed","Sexual abuse","Sickle cell Disease","Simple Malaria Lab Confirmed",
-            "Simple Malaria Non-Lab Confirmed","Skin Diseases & Ulcers","Snake Bite","Substance Abuse","Tetanus",
-            "Trachoma","Tuberculosis","Typhoid/Enteric Fever(Typhoid)","Urethral Discharge","Vaginal Discharge",
-            "Yaws","Yellow Fever","Re-Attendance","Referrals Out"};
+        String[] diseases = loadDiseasesFromFile("data/diseases.txt");
+        if (diseases == null) {
+            return; // Exit if diseases file could not be loaded
+        }
 
-        // Counters for male and female patients by disease and age group
         int[][] maleData = new int[diseases.length][11];
         int[][] femaleData = new int[diseases.length][11];
 
-        // Determine current report month and year
         Calendar now = Calendar.getInstance();
         int reportMonth = now.get(Calendar.MONTH);
         int reportYear = now.get(Calendar.YEAR);
 
-        // Aggregate visit data
-        Calendar visitCal = Calendar.getInstance();
-        for (Visit visit : visits) {
-            Date date = visit.getDate();
-            visitCal.setTime(date);
-            int vMonth = visitCal.get(Calendar.MONTH);
-            int vYear = visitCal.get(Calendar.YEAR);
-            if (vMonth == reportMonth && vYear == reportYear) {
-                String diag = visit.getPrincipalDiagnosis();
-                int i = Arrays.asList(diseases).indexOf(diag);
-                if (i < 0) {
-                    continue; // skip unknown diagnoses
-                }
-                Patient p = patientMap.get(visit.getPatientId());
-                if (p == null) {
-                    continue; // skip visits without patient info
-                }
-                int ageIndex = getAgeIndex(p.getAge());
-                if ("Male".equalsIgnoreCase(p.getSex())) {
-                    maleData[i][ageIndex]++;
-                } else {
-                    femaleData[i][ageIndex]++;
-                }
-            }
-        }
+        aggregateVisitData(diseases, maleData, femaleData, reportMonth, reportYear);
 
         // Prepare output filename
         String fileName = "Morbidity_Report_" + (reportMonth + 1) + "-" + reportYear + ".csv";
@@ -149,6 +112,63 @@ public class Clinic {
         } catch (IOException e) {
             System.err.println("Error writing morbidity report: " + e.getMessage());
         }
+    }
+
+    /**
+     * Aggregates visit data for the specified month and year.
+     * @param diseases Array of diseases.
+     * @param maleData Data array for male patients.
+     * @param femaleData Data array for female patients.
+     * @param reportMonth The month for the report.
+     * @param reportYear The year for the report.
+     */
+    private void aggregateVisitData(String[] diseases, int[][] maleData, int[][] femaleData, int reportMonth, int reportYear) {
+        Calendar visitCal = Calendar.getInstance();
+        for (Visit visit : visits) {
+            Date date = visit.getDate();
+            visitCal.setTime(date);
+            int vMonth = visitCal.get(Calendar.MONTH);
+            int vYear = visitCal.get(Calendar.YEAR);
+            if (vMonth == reportMonth && vYear == reportYear) {
+                String diag = visit.getPrincipalDiagnosis();
+                int i = Arrays.asList(diseases).indexOf(diag);
+                if (i < 0) {
+                    continue; // skip unknown diagnoses
+                }
+                Patient p = patientMap.get(visit.getPatientId());
+                if (p == null) {
+                    continue; // skip visits without patient info
+                }
+                int ageIndex = getAgeIndex(p.getAge());
+                if ("Male".equalsIgnoreCase(p.getSex())) {
+                    maleData[i][ageIndex]++;
+                } else {
+                    femaleData[i][ageIndex]++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Loads the list of diseases from a file.
+     * @param filePath The path to the diseases file.
+     * @return An array of diseases or null if an error occurs.
+     */
+    private String[] loadDiseasesFromFile(String filePath) {
+        String[] diseases = {};
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (!line.isEmpty()) {
+                    diseases = Arrays.copyOf(diseases, diseases.length + 1);
+                    diseases[diseases.length - 1] = line;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Error reading diseases file: " + e.getMessage());
+            return null;
+        }
+        return diseases;
     }
 
     // Map patient age to index (0=<1, 1=1-4, 2=5-9, ..., 10=70+)

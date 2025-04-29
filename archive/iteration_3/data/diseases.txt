@@ -1,0 +1,78 @@
+Acute Ear infection
+Acute Eye infection
+Acute Psychosis
+Acute Urinary Tract Infection
+AFP (Polio)
+All Other Diseases
+Anaemia
+Aneamia in Pregnancy
+Asthma
+Buruli Ulcer
+Cataract
+Chicken Pox
+Cholera
+CSM
+Dental Caries
+Diabetes Mellitus
+Diarrhoea Diseases
+Diphtheria
+Domestic Violence
+Epilepsy
+Genital Ulcer Disease
+Gonorrhoea
+Guinea worm
+Gynaecological conditions
+HIV/AIDS
+Home Accidents and Injuries
+Home Poisonings
+Hypertension
+Infectious Hepatitis
+Intestinal worms
+Kidney Related Diseases
+Leprosy
+Liver Diseases
+Malaria in Pregnancy Lab Confirmed
+Malaria in Pregnancy Non-Lab Confirmed
+Malnutrition
+Measles
+Mumps
+Neonatal Tetanus
+Neurosis
+Occupational Injuries
+Occupational Poisonings
+Onchocercaisis
+Other Animal Bites
+Other ARI(Acute Respiratory Infection)
+Other Cardiac Diseases
+Other Disease of the Female Reproductive System
+Other Disease of the Male Reproductive System
+Other Meningitis
+Other Nutritional Diseases
+Other oral Conditions
+Pertussis
+Pneumonia
+Pregnancy and Related Complications
+PUO (not Malaria)
+Rheumatism and Joint Paints
+Road Traffic Accidents
+Schistosomiasis (Bilharzia)
+Septicaemia
+Severe Malaria Lab Confirmed
+Severe Malaria Non-Lab Confirmed
+Sexual abuse
+Sickle cell Disease
+Simple Malaria Lab Confirmed
+Simple Malaria Non-Lab Confirmed
+Skin Diseases & Ulcers
+Snake Bite
+Substance Abuse
+Tetanus
+Trachoma
+Tuberculosis
+Typhoid/Enteric Fever(Typhoid)
+Urethral Discharge
+Vaginal Discharge
+Yaws
+Yellow Fever
+Re-Attendance
+Referrals Out
