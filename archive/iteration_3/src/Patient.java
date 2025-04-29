@@ -1,4 +1,3 @@
-package src;
 import java.util.Date;
 import java.util.List;
 
@@ -16,10 +15,10 @@ public abstract class Patient {
     private List<Record> records;
 
     // Constructor
-    public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber, 
+    public Patient(Date dateOfBirth, String name, String outPatientNumber,
                    String healthInsuranceNumber, String nationalIdentificationNumber, 
                    String address, String sex, int age, String motherId, List<Record> records) {
-        this.patientId = patientId;
+        this.patientId = IDGenerator.getInstance().generatePatientId();
         this.dateOfBirth = dateOfBirth;
         this.name = name;
         this.outPatientNumber = outPatientNumber;
@@ -38,7 +37,7 @@ public abstract class Patient {
     }
 
     public void setPatientId(String patientId) {
-        this.patientId = patientId;
+        throw new UnsupportedOperationException("Patient ID can only be system-generated and cannot be manually set.");
     }
 
     public Date getDateOfBirth() {
@@ -107,6 +106,12 @@ public abstract class Patient {
 
     public void setMotherId(String motherId) {
         this.motherId = motherId;
+    }
+
+    public void linkMotherRecords(List<Record> motherRecords) {
+        if (motherRecords != null && !motherRecords.isEmpty()) {
+            this.records.addAll(motherRecords);
+        }
     }
 
     public List<Record> getRecords() {
