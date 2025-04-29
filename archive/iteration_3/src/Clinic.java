@@ -1,4 +1,3 @@
-package src;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -25,8 +24,8 @@ public class Clinic {
     private Map<String, Patient> patientMap;
 
     // Constructor
-    public Clinic(String clinicId, String facility, String chpsZone, String subDistrict, String district) {
-        this.clinicId = clinicId;
+    public Clinic(String facility, String chpsZone, String subDistrict, String district) {
+        this.clinicId = IDGenerator.getInstance().generateClinicId();
         this.facility = facility;
         this.chpsZone = chpsZone;
         this.subDistrict = subDistrict;
@@ -38,6 +37,7 @@ public class Clinic {
 
     // Add a new patient to the clinic
     public void addPatient(Patient patient) {
+        patient.setPatientId(IDGenerator.getInstance().generatePatientId());
         patients.add(patient);
         patientMap.put(patient.getPatientId(), patient);
     }
