@@ -1,0 +1,2 @@
+patientId,clinicId,date,bloodPressure,pulse,temperature,weight,respiration,conditionHistory,principalDiagnosis,additionalDiagnosis,treatmentGiven,referred,outcomeOfReferral,costOfTreatment,remarks
+CS126414917,CLINIC1,4/29/2025 09:10:52,6,80,90.0,300.0,bad,so-so,ouch,no,prescribe a beach day,false,fear,8000.00,wow

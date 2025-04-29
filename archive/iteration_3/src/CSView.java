@@ -334,8 +334,5 @@ public class CSView {
         dlg.setVisible(true);
     }
 
-    /** Launches the application. */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new CSView(new CSController()));
-    }
+
 }
