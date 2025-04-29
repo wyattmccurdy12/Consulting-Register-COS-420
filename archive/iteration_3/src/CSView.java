@@ -1,4 +1,3 @@
-package src;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -168,69 +167,66 @@ public class CSView {
 
     /** Show a dialog to add a completely new patient to the system. */
     private void onAddPatient() {
-        JDialog dlg = new JDialog(frame, "Add New Patient", true);
-        dlg.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5,5,5,5);
-        c.anchor = GridBagConstraints.WEST;
+        String newPatientId = IDGenerator.getInstance().generatePatientId();
+        JDialog dialog = new JDialog(this.frame, "Add New Patient", true);
+        dialog.setSize(400, 400);
+        dialog.setLayout(new GridLayout(0, 2, 10, 10)); // Using a simple grid layout for fields
 
-        String[] labels = {
-            "Patient ID:", "Name:", "DOB (M/d/yyyy):", "Outpatient No:",
-            "Health Ins. No:", "National ID No:", "Address:", "Sex:", "Age:", "Mother ID:"
-        };
-        JTextField[] fields = new JTextField[labels.length];
-        for (int i = 0; i < labels.length; i++) {
-            c.gridx = 0; c.gridy = i;
-            JLabel lbl = new JLabel(labels[i]); lbl.setFont(font);
-            dlg.add(lbl, c);
+        JLabel idLabel = new JLabel("Patient ID:");
+        JTextField idField = new JTextField(newPatientId);
+        idField.setEditable(false);
 
-            c.gridx = 1;
-            fields[i] = new JTextField();
-            fields[i].setFont(font);
-            fields[i].setPreferredSize(new Dimension(180, 24));
-            dlg.add(fields[i], c);
-        }
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
 
-        JButton saveBtn = new JButton("Save"); saveBtn.setFont(font);
-        c.gridx = 0; c.gridy = labels.length; c.gridwidth = 2;
-        dlg.add(saveBtn, c);
+        JLabel dobLabel = new JLabel("Date of Birth (M/d/yyyy):");
+        JTextField dobField = new JTextField();
 
-        saveBtn.addActionListener(e -> {
+        JLabel sexLabel = new JLabel("Sex:");
+        JTextField sexField = new JTextField();
+
+        JLabel addressLabel = new JLabel("Address:");
+        JTextField addressField = new JTextField();
+
+        dialog.add(idLabel);
+        dialog.add(idField);
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+        dialog.add(dobLabel);
+        dialog.add(dobField);
+        dialog.add(sexLabel);
+        dialog.add(sexField);
+        dialog.add(addressLabel);
+        dialog.add(addressField);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String dobText = dobField.getText().trim();
+            String sex = sexField.getText().trim();
+            String address = addressField.getText().trim();
+            Date dob;
             try {
-                String id     = fields[0].getText();
-                String name   = fields[1].getText();
-                Date dob      = df.parse(fields[2].getText());
-                String outNo  = fields[3].getText();
-                String insNo  = fields[4].getText();
-                String natNo  = fields[5].getText();
-                String addr   = fields[6].getText();
-                String sex    = fields[7].getText();
-                int age       = Integer.parseInt(fields[8].getText());
-                String mother = fields[9].getText();
-
-                Patient p = new GeneralPatient(
-                  id, dob, name, outNo, insNo, natNo,
-                  addr, sex, age, mother, new ArrayList<>()
-                );
-
-                boolean ok = controller.addPatient(p);
-                JOptionPane.showMessageDialog(
-                  dlg,
-                  ok ? "Patient added." : "Error adding patient.",
-                  ok ? "Success" : "Error",
-                  ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
-                );
-                if (ok) dlg.dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(
-                  dlg, "Invalid input: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE
-                );
+                dob = new SimpleDateFormat("M/d/yyyy").parse(dobText);
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(dialog, "Invalid Date of Birth format. Use M/d/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            if (name.isEmpty() || sex.isEmpty() || address.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "All fields except Patient ID must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            controller.addPatient(new Patient(dob, name, null, null, null, address, sex, 0, null, new ArrayList<>()) {
+            });
+
+            dialog.dispose();
         });
 
-        dlg.pack();
-        dlg.setLocationRelativeTo(frame);
-        dlg.setVisible(true);
+        dialog.add(new JLabel());
+        dialog.add(saveButton);
+        dialog.setVisible(true);
     }
 
     /** Display patient details and past visits in a table dialog. */
