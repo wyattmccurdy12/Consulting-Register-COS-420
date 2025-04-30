@@ -330,5 +330,35 @@ public class CSView {
         dlg.setVisible(true);
     }
 
+    /**
+     * Method to display visit details, including the patient and any child assessment information.
+     *
+     * @param record The medical record associated with the visit
+     */
+    public void displayVisitDetails(Record record) {
+        System.out.println("Visit Details:");
+        System.out.println("---------------------------");
+        System.out.println("Record ID: " + record.getRecordId());
+        System.out.println("Patient Name: " + record.getPatient().getName());
+        System.out.println("Clinic: " + record.getClinic().getName());
 
+        if (record.getChildAssessment() != null) {
+            System.out.println("Child Assessment is required for this patient.");
+            ChildAssessment ca = record.getChildAssessment();
+
+            System.out.println("Child Attributes: " + ca.getChildAttributes());
+            System.out.println("Fever present: " + ca.isTempForFever());
+            System.out.println("Respiration for Pneumonia: " + ca.isRespirationForPneumonia());
+            System.out.println("Palmar Pallor for Anemia: " + ca.isPalmarPallorForAnemia());
+            System.out.println("Stridor: " + ca.isPulseRateForStridor());
+            System.out.println("Malaria pulse rate: " + ca.isPulseRateForMalaria());
+            System.out.println("Blood in stool for Dysentery: " + ca.isBloodInStoolForDysentery());
+            System.out.println("Skin Rashes: " + ca.isSkinRashes());
+            System.out.println("Signs of Convulsion: " + ca.isSignsOfConvulsionOrHistoryOfConvulsion());
+            System.out.println("Lethargy: " + ca.isLethargy());
+            System.out.println("---------------------------");
+        } else {
+            System.out.println("No Child Assessment required for this patient.");
+        }
+    }
 }
