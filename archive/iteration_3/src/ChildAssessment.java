@@ -1,4 +1,3 @@
-package src;
 public class ChildAssessment {
     private String childAttributes;
     private boolean tempForFever;
@@ -20,7 +19,7 @@ public class ChildAssessment {
                            boolean palmarPallorForAnemia, boolean pulseRateForStridor, boolean pulseRateForMalaria,
                            boolean pulseRatePneumonia, boolean bloodInStoolForDysentery, boolean bulgingFontanelForInfection,
                            boolean elasticityOfSkinForDehydration, boolean skinRashes, boolean reddeningOfCordForCordInfection,
-                           boolean signsOfConvulsionOrHistoryOfConvulsion, boolean lethargy) {
+                           boolean signsOfConvulsionOrHistoryOfConvulsion) {
         this.childAttributes = childAttributes;
         this.tempForFever = tempForFever;
         this.respirationForPneumonia = respirationForPneumonia;
