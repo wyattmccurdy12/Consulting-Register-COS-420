@@ -1,4 +1,3 @@
-
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +12,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.io.File;
 
+/**
+ * Represents a clinic that manages patients, visits, and generates morbidity reports.
+ */
 public class Clinic {
     private String clinicId;
     private String facility;
@@ -23,7 +25,14 @@ public class Clinic {
     private List<Visit> visits;
     private Map<String, Patient> patientMap;
 
-    // Constructor
+    /**
+     * Constructs a new Clinic object with the specified details.
+     *
+     * @param facility The name of the facility.
+     * @param chpsZone The CHPS zone of the clinic.
+     * @param subDistrict The sub-district of the clinic.
+     * @param district The district of the clinic.
+     */
     public Clinic(String facility, String chpsZone, String subDistrict, String district) {
         this.clinicId = IDGenerator.getInstance().generateClinicId();
         this.facility = facility;
@@ -35,14 +44,22 @@ public class Clinic {
         this.patientMap = new HashMap<>();
     }
 
-    // Add a new patient to the clinic
+    /**
+     * Adds a new patient to the clinic.
+     *
+     * @param patient The patient to be added.
+     */
     public void addPatient(Patient patient) {
         patient.setPatientId(IDGenerator.getInstance().generatePatientId());
         patients.add(patient);
         patientMap.put(patient.getPatientId(), patient);
     }
 
-    // Record a new visit
+    /**
+     * Records a new visit to the clinic.
+     *
+     * @param visit The visit to be recorded.
+     */
     public void addVisit(Visit visit) {
         visits.add(visit);
     }
@@ -116,6 +133,7 @@ public class Clinic {
 
     /**
      * Aggregates visit data for the specified month and year.
+     *
      * @param diseases Array of diseases.
      * @param maleData Data array for male patients.
      * @param femaleData Data array for female patients.
@@ -151,6 +169,7 @@ public class Clinic {
 
     /**
      * Loads the list of diseases from a file.
+     *
      * @param filePath The path to the diseases file.
      * @return An array of diseases or null if an error occurs.
      */
@@ -171,7 +190,12 @@ public class Clinic {
         return diseases;
     }
 
-    // Map patient age to index (0=<1, 1=1-4, 2=5-9, ..., 10=70+)
+    /**
+     * Maps a patient's age to an index representing an age group.
+     *
+     * @param age The age of the patient.
+     * @return The index corresponding to the age group.
+     */
     private int getAgeIndex(int age) {
         if (age < 1) return 0;
         if (age < 5) return 1;
@@ -186,7 +210,12 @@ public class Clinic {
         return 10;
     }
 
-    // Return a string label for each age index
+    /**
+     * Returns a string label for each age index.
+     *
+     * @param index The age index.
+     * @return The string label for the age group.
+     */
     private String getAgeRange(int index) {
         switch (index) {
             case 0: return "<1";

@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
@@ -133,7 +132,9 @@ public class CSView {
         frame.setVisible(true);
     }
 
-    /** Search by ID or Name+DOB and update the status bar and actions. */
+    /**
+     * Searches for a patient by ID or Name and DOB, updating the status bar and enabling actions.
+     */
     private void onSearch() {
         Patient p = null;
         try {
@@ -154,7 +155,9 @@ public class CSView {
         }
     }
 
-    /** Clear all search fields and reset the UI state. */
+    /**
+     * Clears all search fields and resets the UI state.
+     */
     private void onClear() {
         idField.setText("");
         nameField.setText("");
@@ -165,7 +168,9 @@ public class CSView {
         recordBtn.setEnabled(false);
     }
 
-    /** Show a dialog to add a completely new patient to the system. */
+    /**
+     * Opens a dialog to add a new patient to the system.
+     */
     private void onAddPatient() {
         String newPatientId = IDGenerator.getInstance().generatePatientId();
         JDialog dialog = new JDialog(this.frame, "Add New Patient", true);
@@ -229,7 +234,9 @@ public class CSView {
         dialog.setVisible(true);
     }
 
-    /** Display patient details and past visits in a table dialog. */
+    /**
+     * Displays patient details and past visits in a table dialog.
+     */
     private void onViewDetails() {
         if (current[0] == null) {
             JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -261,7 +268,9 @@ public class CSView {
         JOptionPane.showMessageDialog(frame, sp, "Patient Details & Visits", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /** Open a dialog to record a new visit for the currently loaded patient. */
+    /**
+     * Opens a dialog to record a new visit for the currently loaded patient.
+     */
     private void onRecordVisit() {
         if (current[0] == null) {
             JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -331,16 +340,16 @@ public class CSView {
     }
 
     /**
-     * Method to display visit details, including the patient and any child assessment information.
+     * Displays visit details, including the patient and any child assessment information.
      *
-     * @param record The medical record associated with the visit
+     * @param record The medical record associated with the visit.
      */
     public void displayVisitDetails(Record record) {
         System.out.println("Visit Details:");
         System.out.println("---------------------------");
         System.out.println("Record ID: " + record.getRecordId());
         System.out.println("Patient Name: " + record.getPatient().getName());
-        System.out.println("Clinic: " + record.getClinic().getName());
+        // System.out.println("Clinic: " + record.getClinic().getName());
 
         if (record.getChildAssessment() != null) {
             System.out.println("Child Assessment is required for this patient.");

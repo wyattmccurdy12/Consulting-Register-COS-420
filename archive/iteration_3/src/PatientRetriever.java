@@ -1,5 +1,3 @@
-package src;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -87,7 +85,7 @@ public class PatientRetriever {
         String motherId = fields[9];
         List<Record> records = new ArrayList<>(); // Assuming records are not stored in the CSV
 
-        return new GeneralPatient(patientId, dateOfBirth, name,
+        return new GeneralPatient(dateOfBirth, name,
                 outPatientNumber, healthInsuranceNumber,
                 nationalIdentificationNumber, address, sex,
                 age, motherId, records);

@@ -1,5 +1,3 @@
-package src;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -35,8 +33,12 @@ public class CSController {
     }
 
     /**
-     * Ensures that a CSV file exists at the given path, creating it (and parent dirs) if needed,
-     * and writing the provided header as its first line.
+     * Ensures that a CSV file exists at the specified path. If the file does not exist, it creates
+     * the file along with any necessary parent directories and writes the provided header as the
+     * first line of the file.
+     *
+     * @param path   The path to the CSV file.
+     * @param header The header line to write to the file if it is created.
      */
     private void ensureCsvExists(String path, String header) {
         File f = new File(path);
