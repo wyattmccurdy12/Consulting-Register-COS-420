@@ -140,11 +140,15 @@ public class CSController {
 
     /**
      * Adds a new patient by appending to the patients CSV.
+     * Ensures the content is added on the next line.
+     *
      * @param p the Patient to add
      * @return true on success, false on I/O error
      */
     public boolean addPatient(Patient p) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(patientsCsv, true))) {
+            // Ensure content is appended on the next line
+            pw.println();
             pw.printf(
               "%s,%s,%s,%s,%s,%s,%s,%s,%d,%s%n",
               p.getPatientId(),

@@ -223,8 +223,7 @@ public class CSView {
                 return;
             }
 
-            controller.addPatient(new Patient(dob, name, null, null, null, address, sex, 0, null, new ArrayList<>()) {
-            });
+            controller.addPatient(new Patient(dob, name, null, null, null, address, sex, 0, null, new ArrayList<>()) {});
 
             dialog.dispose();
         });

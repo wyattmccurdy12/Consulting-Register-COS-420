@@ -400,4 +400,15 @@ public class Visit {
     public void setChildAssessment(ChildAssessment childAssessment) {
         this.childAssessment = childAssessment;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "Visit Date: %s, Clinic ID: %s, Blood Pressure: %s, Pulse: %s, Temperature: %.1f, Weight: %.1f, Respiration: %s, " +
+            "Condition History: %s, Principal Diagnosis: %s, Additional Diagnosis: %s, Treatment Given: %s, Referred: %b, " +
+            "Outcome of Referral: %s, Cost of Treatment: %.2f, Remarks: %s",
+            date, clinicId, bloodPressure, pulse, temperature, weight, respiration, conditionHistory, principalDiagnosis,
+            additionalDiagnosis, treatmentGiven, referred, outcomeOfReferral, costOfTreatment, remarks
+        );
+    }
 }
