@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CSController acts as the controller in the MVC architecture for the Consulting Register application.
@@ -18,6 +19,7 @@ public class CSController {
     private PatientRetriever patientRetriever;
     private String patientsCsv = "archive/iteration_3/data/ConsultingRegisterPatients.csv";
     private String visitsCsv   = "archive/iteration_3/data/ConsultingRegisterVisits.csv";
+    private String clinicsCsv  = "archive/iteration_3/data/ConsultingRegisterClinics.csv";
     private SimpleDateFormat df  = new SimpleDateFormat("M/d/yyyy");
     private SimpleDateFormat dtf = new SimpleDateFormat("M/d/yyyy HH:mm:ss");
 
@@ -30,6 +32,8 @@ public class CSController {
             "patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId");
         ensureCsvExists(visitsCsv,
             "patientId,clinicId,date,bloodPressure,pulse,temperature,weight,respiration,conditionHistory,principalDiagnosis,additionalDiagnosis,treatmentGiven,referred,outcomeOfReferral,costOfTreatment,remarks");
+        ensureCsvExists(clinicsCsv,
+            "clinicId,facility,chpsZone,subDistrict,district");
     }
 
     /**
@@ -167,5 +171,24 @@ public class CSController {
             System.err.println("Error writing patient: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Retrieves a list of clinic facilities from the clinics CSV.
+     * @return A list of clinic names (facilities).
+     */
+    public List<String> getClinicFacilities() {
+        List<String> facilities = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(clinicsCsv))) {
+            br.readLine(); // Skip header
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",", -1);
+                facilities.add(fields[1]); // Facility name
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading clinics: " + e.getMessage());
+        }
+        return facilities.stream().distinct().collect(Collectors.toList());
     }
 }

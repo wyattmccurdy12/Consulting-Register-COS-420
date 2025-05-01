@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CSView manages the GUI for the Consulting Register application.
@@ -277,9 +278,23 @@ public class CSView {
         }
 
         JDialog dlg = new JDialog(frame, "Record Visit", true);
-        dlg.setLayout(new GridLayout(0,2,5,5));
-        dlg.setMinimumSize(new Dimension(400,400));
+        dlg.setLayout(new GridLayout(0, 2, 5, 5));
+        dlg.setMinimumSize(new Dimension(400, 500));
 
+        // Clinic drop-down
+        JLabel clinicLabel = new JLabel("Clinic:");
+        clinicLabel.setFont(font);
+        dlg.add(clinicLabel);
+
+        JComboBox<String> clinicDropdown = new JComboBox<>();
+        clinicDropdown.setFont(font);
+        List<String> clinics = controller.getClinicFacilities();
+        for (String clinic : clinics) {
+            clinicDropdown.addItem(clinic);
+        }
+        dlg.add(clinicDropdown);
+
+        // Other fields
         String[] labels = {
           "Blood Pressure:", "Pulse:", "Temperature:", "Weight:", "Respiration:",
           "History:", "Diagnosis:", "Addl Diagnosis:", "Treatment:",
@@ -287,22 +302,25 @@ public class CSView {
         };
         JTextField[] fields = new JTextField[labels.length];
         for (int i = 0; i < labels.length; i++) {
-            JLabel lbl = new JLabel(labels[i]); lbl.setFont(font);
+            JLabel lbl = new JLabel(labels[i]);
+            lbl.setFont(font);
             dlg.add(lbl);
             fields[i] = new JTextField();
             fields[i].setFont(font);
             dlg.add(fields[i]);
         }
 
-        JButton save = new JButton("Save"); save.setFont(font);
+        JButton save = new JButton("Save");
+        save.setFont(font);
         dlg.add(new JLabel());
         dlg.add(save);
 
         save.addActionListener(ae -> {
             try {
+                String selectedClinic = (String) clinicDropdown.getSelectedItem();
                 Visit v = new Visit(
                   current[0].getPatientId(),
-                  "CLINIC1",
+                  selectedClinic,
                   new Date(),
                   fields[0].getText(),
                   fields[1].getText(),

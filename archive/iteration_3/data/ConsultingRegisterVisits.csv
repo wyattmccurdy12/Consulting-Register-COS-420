@@ -1,2 +1,2 @@
 patientId,clinicId,date,bloodPressure,pulse,temperature,weight,respiration,conditionHistory,principalDiagnosis,additionalDiagnosis,treatmentGiven,referred,outcomeOfReferral,costOfTreatment,remarks
-CS126414917,CLINIC1,4/29/2025 09:10:52,6,80,90.0,300.0,bad,so-so,ouch,no,prescribe a beach day,false,fear,8000.00,wow
+PAT-1,Bono Clinic,4/30/2025 20:30:13,60/80,120,90.0,150.0,20,dieifnei,eifnoafn,oineafoine,oeinfeintin,true,accept,4000.00,oainefeoin
