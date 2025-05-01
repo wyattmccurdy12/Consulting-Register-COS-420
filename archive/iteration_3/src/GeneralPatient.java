@@ -10,6 +10,7 @@ public class GeneralPatient extends Patient {
     /**
      * Constructs a GeneralPatient object with the specified details.
      *
+     * @param patientId The unique ID of the patient.
      * @param dateOfBirth The date of birth of the patient.
      * @param name The name of the patient.
      * @param outPatientNumber The outpatient number of the patient.
@@ -21,11 +22,11 @@ public class GeneralPatient extends Patient {
      * @param motherId The ID of the patient's mother (if applicable).
      * @param records The list of medical records associated with the patient.
      */
-    public GeneralPatient(Date dateOfBirth, String name, String outPatientNumber,
+    public GeneralPatient(String patientId, Date dateOfBirth, String name, String outPatientNumber,
                           String healthInsuranceNumber, String nationalIdentificationNumber,
                           String address, String sex, int age, String motherId, List<Record> records) {
-        super(dateOfBirth, name, outPatientNumber, healthInsuranceNumber, nationalIdentificationNumber,
-                address, sex, age, motherId, records);
+        super(patientId, dateOfBirth, name, outPatientNumber, healthInsuranceNumber, nationalIdentificationNumber,
+              address, sex, age, motherId, records);
     }
 
     // No extra fields yet, but can be added later if needed

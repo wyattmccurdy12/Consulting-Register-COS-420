@@ -14,8 +14,7 @@ import java.util.List;
  */
 public class CSView {
     private final CSController controller;
-    private final SimpleDateFormat df  = new SimpleDateFormat("M/d/yyyy");
-    private final SimpleDateFormat dtf = new SimpleDateFormat("M/d/yyyy HH:mm:ss");  // includes time
+    private final CSModel model;
     private final JFrame frame;
     private final JTextField idField;
     private final JTextField nameField;
@@ -23,15 +22,15 @@ public class CSView {
     private final JLabel statusLabel;
     private final JButton viewBtn;
     private final JButton recordBtn;
-    private final Patient[] current = new Patient[1];
     private final Font font = new Font("SansSerif", Font.PLAIN, 14);
 
     /**
      * Constructs and shows the main Consulting Register window.
      * @param controller the controller handling business logic
      */
-    public CSView(CSController controller) {
+    public CSView(CSController controller, CSModel model) {
         this.controller = controller;
+        this.model = model;
 
         frame = new JFrame("Consulting Register");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -139,7 +138,7 @@ public class CSView {
     private void onSearch() {
         List<Patient> patients = new ArrayList<>();
         try {
-            Date dob = dobField.getText().isBlank() ? null : df.parse(dobField.getText());
+            Date dob = dobField.getText().isBlank() ? null : model.getDateFormatter().parse(dobField.getText());
             patients = controller.retrievePatients(idField.getText(), nameField.getText(), dob);
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(frame, "Bad DOB format", "Error", JOptionPane.ERROR_MESSAGE);
@@ -160,7 +159,7 @@ public class CSView {
             tableModel.addRow(new Object[]{
                 p.getPatientId(),
                 p.getName(),
-                df.format(p.getDateOfBirth()),
+                model.getDateFormatter().format(p.getDateOfBirth()),
                 p.getAge(),
                 p.getAddress(),
                 p.getSex()
@@ -185,11 +184,12 @@ public class CSView {
 
         if (result == JOptionPane.OK_OPTION && table.getSelectedRow() != -1) {
             int selectedRow = table.getSelectedRow();
-            current[0] = patients.get(selectedRow);
-            statusLabel.setText("✔ Selected patient: " + current[0].getName());
+            model.setSelectedPatient(patients.get(selectedRow));
+            statusLabel.setText("✔ Selected patient: " + model.getSelectedPatient().getName());
             viewBtn.setEnabled(true);
             recordBtn.setEnabled(true);
         } else {
+            model.clearSelectedPatient();
             statusLabel.setText("✖ No patient selected");
             viewBtn.setEnabled(false);
             recordBtn.setEnabled(false);
@@ -204,7 +204,7 @@ public class CSView {
         nameField.setText("");
         dobField.setText("");
         statusLabel.setText(" ");
-        current[0] = null;
+        model.clearSelectedPatient();
         viewBtn.setEnabled(false);
         recordBtn.setEnabled(false);
     }
@@ -253,7 +253,7 @@ public class CSView {
             String address = addressField.getText().trim();
             Date dob;
             try {
-                dob = new SimpleDateFormat("M/d/yyyy").parse(dobText);
+                dob = model.getDateFormatter().parse(dobText);
             } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(dialog, "Invalid Date of Birth format. Use M/d/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -264,8 +264,22 @@ public class CSView {
                 return;
             }
 
-            controller.addPatient(new Patient(dob, name, null, null, null, address, sex, 0, null, new ArrayList<>()) {});
+            String generatedPatientId = idField.getText().trim(); // Use the generated ID
+            GeneralPatient newPatient = new GeneralPatient(
+                generatedPatientId,
+                dob,
+                name,
+                null, // outPatientNumber
+                null, // healthInsuranceNumber
+                null, // nationalIdentificationNumber
+                address,
+                sex,
+                0, // age
+                null, // motherId
+                new ArrayList<>() // records
+            );
 
+            controller.addPatient(newPatient);
             dialog.dispose();
         });
 
@@ -278,15 +292,15 @@ public class CSView {
      * Displays patient details and past visits in a table dialog.
      */
     private void onViewDetails() {
-        if (current[0] == null) {
+        if (model.getSelectedPatient() == null) {
             JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        Patient p = current[0];
+        Patient p = model.getSelectedPatient();
         DefaultTableModel dm = new DefaultTableModel(new String[]{"Field","Value"}, 0);
         dm.addRow(new Object[]{"ID", p.getPatientId()});
         dm.addRow(new Object[]{"Name", p.getName()});
-        dm.addRow(new Object[]{"DOB", df.format(p.getDateOfBirth())});
+        dm.addRow(new Object[]{"DOB", model.getDateFormatter().format(p.getDateOfBirth())});
         dm.addRow(new Object[]{"Age", p.getAge()});
         dm.addRow(new Object[]{"Address", p.getAddress()});
         dm.addRow(new Object[]{"Sex", p.getSex()});
@@ -294,7 +308,7 @@ public class CSView {
         for (Visit v : controller.getVisitsForPatient(p.getPatientId())) {
             dm.addRow(new Object[]{
                 "— Visit on",
-                dtf.format(v.getDate())  // now shows real date+time
+                model.getDateTimeFormatter().format(v.getDate())  // now shows real date+time
             });
             dm.addRow(new Object[]{"   Diagnosis", v.getPrincipalDiagnosis()});
             dm.addRow(new Object[]{"   Treatment", v.getTreatmentGiven()});
@@ -312,7 +326,7 @@ public class CSView {
      * Opens a dialog to record a new visit for the currently loaded patient.
      */
     private void onRecordVisit() {
-        if (current[0] == null) {
+        if (model.getSelectedPatient() == null) {
             JOptionPane.showMessageDialog(frame, "Search first!", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
@@ -328,8 +342,7 @@ public class CSView {
 
         JComboBox<String> clinicDropdown = new JComboBox<>();
         clinicDropdown.setFont(font);
-        List<String> clinics = controller.getClinicFacilities();
-        for (String clinic : clinics) {
+        for (String clinic : model.getClinicList()) {
             clinicDropdown.addItem(clinic);
         }
         dlg.add(clinicDropdown);
@@ -359,7 +372,7 @@ public class CSView {
             try {
                 String selectedClinic = (String) clinicDropdown.getSelectedItem();
                 Visit v = new Visit(
-                  current[0].getPatientId(),
+                  model.getSelectedPatient().getPatientId(), // Ensure patientId comes from the selected patient
                   selectedClinic,
                   new Date(),
                   fields[0].getText(),

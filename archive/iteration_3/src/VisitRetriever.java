@@ -12,8 +12,13 @@ import java.util.List;
  * It supports lookup by patient ID.
  */
 public class VisitRetriever {
-    private String visitsCsvPath = "archive/iteration_3/data/ConsultingRegisterVisits.csv";
-    private SimpleDateFormat dtf = new SimpleDateFormat("M/d/yyyy HH:mm:ss");
+    private final String visitsCsvPath;
+    private final SimpleDateFormat dtf;
+
+    public VisitRetriever(String visitsCsvPath, SimpleDateFormat dtf) {
+        this.visitsCsvPath = visitsCsvPath;
+        this.dtf = dtf;
+    }
 
     /**
      * Retrieves all visits for a given patient ID.

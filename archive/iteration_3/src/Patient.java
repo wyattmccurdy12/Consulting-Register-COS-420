@@ -21,6 +21,7 @@ public abstract class Patient {
     /**
      * Constructs a Patient object with the specified details.
      *
+     * @param patientId The unique ID of the patient.
      * @param dateOfBirth The date of birth of the patient.
      * @param name The name of the patient.
      * @param outPatientNumber The outpatient number of the patient.
@@ -32,10 +33,10 @@ public abstract class Patient {
      * @param motherId The ID of the patient's mother (if applicable).
      * @param records The list of medical records associated with the patient.
      */
-    public Patient(Date dateOfBirth, String name, String outPatientNumber,
+    public Patient(String patientId, Date dateOfBirth, String name, String outPatientNumber,
                    String healthInsuranceNumber, String nationalIdentificationNumber, 
                    String address, String sex, int age, String motherId, List<Record> records) {
-        this.patientId = IDGenerator.getInstance().generatePatientId();
+        this.patientId = patientId != null ? patientId : IDGenerator.getInstance().generatePatientId();
         this.dateOfBirth = dateOfBirth;
         this.name = name;
         this.outPatientNumber = outPatientNumber;

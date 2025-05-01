@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
  * It handles business logic for retrieving patients, adding new patients, and recording visits.
  */
 public class CSController {
-    private PatientRetriever patientRetriever;
+    private final PatientRetriever patientRetriever;
+    private final VisitRetriever visitRetriever;
+    private final CSModel model;
     private String patientsCsv = "archive/iteration_3/data/ConsultingRegisterPatients.csv";
     private String visitsCsv   = "archive/iteration_3/data/ConsultingRegisterVisits.csv";
     private String clinicsCsv  = "archive/iteration_3/data/ConsultingRegisterClinics.csv";
@@ -26,8 +28,11 @@ public class CSController {
     /**
      * Constructs a CSController instance and ensures both CSV files exist with headers.
      */
-    public CSController() {
-        this.patientRetriever = new PatientRetriever();
+    public CSController(PatientRetriever patientRetriever, VisitRetriever visitRetriever, CSModel model) {
+        this.patientRetriever = patientRetriever;
+        this.visitRetriever = visitRetriever;
+        this.model = model;
+        model.setClinicList(getClinicFacilities());
         ensureCsvExists(patientsCsv,
             "patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId");
         ensureCsvExists(visitsCsv,

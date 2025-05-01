@@ -12,9 +12,13 @@ import java.util.List;
  * is stored as a CSV file. It supports lookup by patient ID or by name and DOB.
  */
 public class PatientRetriever {
+    private final String patientCsvPath;
+    private final SimpleDateFormat df;
 
-    private String patientCsvPath = "archive/iteration_3/data/ConsultingRegisterPatients.csv";
-    private SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy");
+    public PatientRetriever(String patientCsvPath, SimpleDateFormat df) {
+        this.patientCsvPath = patientCsvPath;
+        this.df = df;
+    }
 
     /**
      * Retrieves a patient by their unique ID.
@@ -111,9 +115,7 @@ public class PatientRetriever {
         String motherId = fields[9];
         List<Record> records = new ArrayList<>(); // Assuming records are not stored in the CSV
 
-        return new GeneralPatient(dateOfBirth, name,
-                outPatientNumber, healthInsuranceNumber,
-                nationalIdentificationNumber, address, sex,
-                age, motherId, records);
+        return new GeneralPatient(patientId, dateOfBirth, name, outPatientNumber, healthInsuranceNumber,
+                                  nationalIdentificationNumber, address, sex, age, motherId, records);
     }
 }
