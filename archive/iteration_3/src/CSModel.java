@@ -71,4 +71,13 @@ public class CSModel {
     public void setClinicList(List<String> clinicList) {
         this.clinicList = clinicList;
     }
+
+    /**
+     * Gets the patient ID of the currently selected patient.
+     *
+     * @return The patient ID, or null if no patient is selected.
+     */
+    public String getCurrentPatientId() {
+        return selectedPatient != null ? selectedPatient.getPatientId() : null;
+    }
 }

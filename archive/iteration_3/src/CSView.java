@@ -116,6 +116,8 @@ public class CSView {
         recordBtn.setEnabled(false);
         actionsPanel.add(viewBtn);
         actionsPanel.add(recordBtn);
+        JButton pastVisitsBtn = new JButton("View Past Visits"); pastVisitsBtn.setFont(font);
+        actionsPanel.add(pastVisitsBtn);
         frame.add(actionsPanel, BorderLayout.SOUTH);
 
         // --- Event wiring ---
@@ -124,6 +126,7 @@ public class CSView {
         addBtn   .addActionListener(e -> onAddPatient());
         viewBtn  .addActionListener(e -> onViewDetails());
         recordBtn.addActionListener(e -> onRecordVisit());
+        pastVisitsBtn.addActionListener(e -> onViewPastVisits());
 
         // --- Pack, lock minimum size, and display ---
         frame.pack();
@@ -439,5 +442,41 @@ public class CSView {
         } else {
             System.out.println("No Child Assessment required for this patient.");
         }
+    }
+
+    /**
+     * Displays all past visits for the currently selected patient in a table dialog.
+     */
+    private void onViewPastVisits() {
+        if (model.getSelectedPatient() == null) {
+            JOptionPane.showMessageDialog(frame, "No patient selected. Please search and select a patient first.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        List<Visit> visits = controller.getAllVisitsForCurrentPatient();
+        if (visits.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "No past visits found for the selected patient.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String[] columnNames = {"Date", "Clinic", "Diagnosis", "Treatment", "Remarks"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        for (Visit visit : visits) {
+            tableModel.addRow(new Object[]{
+                model.getDateTimeFormatter().format(visit.getDate()),
+                visit.getClinicId(),
+                visit.getPrincipalDiagnosis(),
+                visit.getTreatmentGiven(),
+                visit.getRemarks()
+            });
+        }
+
+        JTable table = new JTable(tableModel);
+        table.setFont(font);
+        table.setRowHeight(24);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(700, 300));
+
+        JOptionPane.showMessageDialog(frame, scrollPane, "Past Visits", JOptionPane.INFORMATION_MESSAGE);
     }
 }

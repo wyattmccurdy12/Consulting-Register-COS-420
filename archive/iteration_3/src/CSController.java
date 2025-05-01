@@ -116,6 +116,23 @@ public class CSController {
     }
 
     /**
+     * Retrieves all visits for the patient that is currently selected in the model.
+     *
+     * @param patientId The ID of the patient whose visits are to be retrieved.
+     * @return A list of Visit objects associated with the patient.
+     */
+    public List<Visit> getAllVisitsForCurrentPatient() {
+
+        String patientId = model.getCurrentPatientId();
+        if (patientId == null || patientId.isBlank()) {
+            System.err.println("No patient selected.");
+            return new ArrayList<>();
+        }
+
+        return visitRetriever.retrieveVisitsByPatientId(patientId);
+    }
+
+    /**
      * Records a new visit by appending it to the visits CSV, storing full date+time.
      * @param v the Visit object to record
      * @return true on success, false on I/O error
