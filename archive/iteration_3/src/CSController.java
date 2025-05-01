@@ -59,19 +59,20 @@ public class CSController {
     }
 
     /**
-     * Retrieves a patient by ID (if non-blank) or by name & DOB.
+     * Retrieves a list of patients by ID (if non-blank) or by name & DOB.
      * @param id   the patient’s ID (may be blank)
      * @param name the patient’s full name (used if ID blank)
      * @param dob  the patient’s date of birth (used if ID blank)
-     * @return matching Patient or null
+     * @return list of matching Patients (empty list if none)
      */
-    public Patient retrievePatient(String id, String name, Date dob) {
+    public List<Patient> retrievePatients(String id, String name, Date dob) {
         if (id != null && !id.isBlank()) {
-            return patientRetriever.retrievePatientById(id);
+            Patient patient = patientRetriever.retrievePatientById(id);
+            return patient != null ? List.of(patient) : new ArrayList<>();
         } else if (name != null && dob != null) {
-            return patientRetriever.retrieveByNameDob(name, dob);
+            return patientRetriever.retrieveByNameDobMultiple(name, dob);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**

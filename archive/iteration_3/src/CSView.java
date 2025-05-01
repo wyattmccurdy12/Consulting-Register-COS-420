@@ -134,23 +134,63 @@ public class CSView {
     }
 
     /**
-     * Searches for a patient by ID or Name and DOB, updating the status bar and enabling actions.
+     * Searches for patients by ID or Name and DOB, displaying results in a table.
      */
     private void onSearch() {
-        Patient p = null;
+        List<Patient> patients = new ArrayList<>();
         try {
             Date dob = dobField.getText().isBlank() ? null : df.parse(dobField.getText());
-            p = controller.retrievePatient(idField.getText(), nameField.getText(), dob);
+            patients = controller.retrievePatients(idField.getText(), nameField.getText(), dob);
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(frame, "Bad DOB format", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        current[0] = p;
-        if (p != null) {
-            statusLabel.setText("✔ Found patient: " + p.getName());
+
+        if (patients.isEmpty()) {
+            statusLabel.setText("✖ No patients found");
+            viewBtn.setEnabled(false);
+            recordBtn.setEnabled(false);
+            return;
+        }
+
+        // Display patients in a table
+        String[] columnNames = {"ID", "Name", "DOB", "Age", "Address", "Sex"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        for (Patient p : patients) {
+            tableModel.addRow(new Object[]{
+                p.getPatientId(),
+                p.getName(),
+                df.format(p.getDateOfBirth()),
+                p.getAge(),
+                p.getAddress(),
+                p.getSex()
+            });
+        }
+
+        JTable table = new JTable(tableModel);
+        table.setFont(font);
+        table.setRowHeight(24);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(700, 200));
+
+        int result = JOptionPane.showConfirmDialog(
+            frame,
+            scrollPane,
+            "Select a Patient",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result == JOptionPane.OK_OPTION && table.getSelectedRow() != -1) {
+            int selectedRow = table.getSelectedRow();
+            current[0] = patients.get(selectedRow);
+            statusLabel.setText("✔ Selected patient: " + current[0].getName());
             viewBtn.setEnabled(true);
             recordBtn.setEnabled(true);
         } else {
-            statusLabel.setText("✖ No patient found");
+            statusLabel.setText("✖ No patient selected");
             viewBtn.setEnabled(false);
             recordBtn.setEnabled(false);
         }

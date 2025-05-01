@@ -1,3 +1,2 @@
 ﻿patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId,records
-Jeeves,OP39283,HI33948,NI39384,4 H Ln,F,1,CS39238
 PAT-3,1/1/2020,Leroy Jennkins,null,null,null,Mordor,M,0,null

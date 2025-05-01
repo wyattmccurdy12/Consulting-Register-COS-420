@@ -66,6 +66,32 @@ public class PatientRetriever {
     }
 
     /**
+     * Retrieves a list of patients by matching name and date of birth.
+     *
+     * @param name the full name of the patient
+     * @param dob  the date of birth of the patient
+     * @return a list of matching Patient objects (empty if none found)
+     */
+    public List<Patient> retrieveByNameDobMultiple(String name, Date dob) {
+        List<Patient> patients = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(patientCsvPath))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",", -1);
+                String recordName = fields[2];
+                Date recordDob = df.parse(fields[1]);
+                if (recordName.equalsIgnoreCase(name) && recordDob.equals(dob)) {
+                    patients.add(parsePatient(fields));
+                }
+            }
+        } catch (IOException | ParseException e) {
+            System.err.println("Error reading patient records by name/DOB: " + e.getMessage());
+        }
+        return patients;
+    }
+
+    /**
      * Parses a CSV fields array into a Patient object.
      *
      * @param fields the CSV columns: [0]=ID, [1]=DOB, [2]=Name, etc.
