@@ -1,2 +1,5 @@
 ﻿patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId,records
 PAT-3,1/1/2020,Leroy Jennkins,null,null,null,Mordor,M,0,null
+PAT-4,9/12/2020,Martha,null,null,null,44 B Lane,F,0,null
+
+PAT-5,1/1/1800,Edward Cullen,null,null,null,Somewhere in Alaska,M,0,null
