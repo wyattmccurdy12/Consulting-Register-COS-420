@@ -174,9 +174,9 @@ public class CSController {
      */
     public boolean addPatient(Patient p) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(patientsCsv, true))) {
-            // Ensure content is appended on the next line
-            pw.println();
             pw.printf(
+              // print a newline first to ensure the content is added on the next line
+              "%n" +
               "%s,%s,%s,%s,%s,%s,%s,%s,%d,%s%n",
               p.getPatientId(),
               df.format(p.getDateOfBirth()),
