@@ -25,5 +25,5 @@ The project was completed as part of an agile-style team dynamic. The class was 
 - Wyatt McCurdy
 
 
-#* About the use of AI 
+## About the use of AI 
 This course was dual-purpse. The goals were to find out the utility and limits of AI for speeding along projects, as well as to learn good object-oriented design. This meant that our project relied significantly on help from AI tools including Github Copilot (GPT-4o). The challenge of using AI in a group project was to allow it to help in the project construction while avoiding pitfalls including hidden flaws in the code or unexpected project results. 
