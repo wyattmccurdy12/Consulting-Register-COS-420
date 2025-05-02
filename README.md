@@ -3,23 +3,27 @@ This repository holds information from a University of Southern Maine group proj
 
 ## The goal of this project
 Our goal is to create part of an application for health monitoring and family planning. Our group, the Consulting Register team, maintains the register of patients and visits at different clinics. The information is meant to be helpful for health officers recording visits, searching for patients, and creating morbidity reports for patients. 
-The system is meant to mimick a real system put in place to assist in healthcare at clinics in Ghana.
+The system is meant to mimick a real system put in place to assist in healthcare at clinics in Ghana. The consulting register system, in particular, is meant to alleviate the burden of keeping paper records on patient visits throughout areas of rural Ghana. 
+
+## Directory Structure
+All code and data are in the "archive" folder. Currently, we are on the final iteration of the project and final code is held in "archive/iteration_3." Within this folder, we have a data folder in which we maintain patient data, clinic data, and visit data, as well as a list of designated diseases. All of our code is categorized under "src." The MainApp is the starting point of our application. 
+
 
 The project was completed as part of an agile-style team dynamic. The class was broken into five groups, each with two pairs of programmers and a team lead. The goal was to work towards a common goal using scrum, agile, and object-oriented best-practices. 
 
 ## COLLABORATORS
 =============
-## Team Lead 
+### Team Lead 
 - Wyatt McCurdy
 
-## Pair Programming Group 1
+### Pair Programming Group 1
 - James Tedder
 - Mandy Ho
 
-## Pair Programming Group 2
+### Pair Programming Group 2
 - Aubin Mugisha
 - Wyatt McCurdy
 
 
-### About the use of AI 
+#* About the use of AI 
 This course was dual-purpse. The goals were to find out the utility and limits of AI for speeding along projects, as well as to learn good object-oriented design. This meant that our project relied significantly on help from AI tools including Github Copilot (GPT-4o). The challenge of using AI in a group project was to allow it to help in the project construction while avoiding pitfalls including hidden flaws in the code or unexpected project results. 
