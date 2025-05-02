@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 /**
  * CSController acts as the controller in the MVC architecture for the Consulting Register application.
  * It handles business logic for retrieving patients, adding new patients, and recording visits.
@@ -19,26 +20,51 @@ public class CSController {
     private final PatientRetriever patientRetriever;
     private final VisitRetriever visitRetriever;
     private final CSModel model;
+    private final Clinic clinic;
     private String patientsCsv = "archive/iteration_3/data/ConsultingRegisterPatients.csv";
     private String visitsCsv   = "archive/iteration_3/data/ConsultingRegisterVisits.csv";
     private String clinicsCsv  = "archive/iteration_3/data/ConsultingRegisterClinics.csv";
     private SimpleDateFormat df  = new SimpleDateFormat("M/d/yyyy");
     private SimpleDateFormat dtf = new SimpleDateFormat("M/d/yyyy HH:mm:ss");
+    
+
 
     /**
      * Constructs a CSController instance and ensures both CSV files exist with headers.
      */
-    public CSController(PatientRetriever patientRetriever, VisitRetriever visitRetriever, CSModel model) {
+    public CSController(PatientRetriever patientRetriever,
+                        VisitRetriever visitRetriever,
+                        CSModel model) {
         this.patientRetriever = patientRetriever;
-        this.visitRetriever = visitRetriever;
-        this.model = model;
+        this.visitRetriever   = visitRetriever;
+        this.model            = model;
+
         model.setClinicList(getClinicFacilities());
+
         ensureCsvExists(patientsCsv,
-            "patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber,nationalIdentificationNumber,address,sex,age,motherId");
+            "patientId,dateOfBirth,name,outPatientNumber,healthInsuranceNumber," +
+            "nationalIdentificationNumber,address,sex,age,motherId");
         ensureCsvExists(visitsCsv,
-            "patientId,clinicId,date,bloodPressure,pulse,temperature,weight,respiration,conditionHistory,principalDiagnosis,additionalDiagnosis,treatmentGiven,referred,outcomeOfReferral,costOfTreatment,remarks");
+            "patientId,clinicId,date,bloodPressure,pulse,temperature,weight,respiration," +
+            "conditionHistory,principalDiagnosis,additionalDiagnosis,treatmentGiven," +
+            "referred,outcomeOfReferral,costOfTreatment,remarks");
         ensureCsvExists(clinicsCsv,
             "clinicId,facility,chpsZone,subDistrict,district");
+
+        // Instantiate Clinic for morbidity-report generation
+        this.clinic = new Clinic(
+            "Ashanti Clinic", // facility name (hard-coded for now)
+            "",               // CHPS zone
+            "",               // sub-district
+            ""                // district
+        );
+    }
+
+    /**
+     * Hook for the GUI button: delegates to Clinic.generateMorbidityReport()
+     */
+    public void generateMorbidityReport() {
+        clinic.generateMorbidityReport();
     }
 
     /**
@@ -62,6 +88,8 @@ public class CSController {
             }
         }
     }
+
+    
 
     /**
      * Retrieves a list of patients by ID (if non-blank) or by name & DOB.

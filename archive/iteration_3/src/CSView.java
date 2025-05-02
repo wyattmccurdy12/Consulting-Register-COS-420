@@ -116,6 +116,20 @@ public class CSView {
         recordBtn.setEnabled(false);
         actionsPanel.add(viewBtn);
         actionsPanel.add(recordBtn);
+        JButton reportBtn = new JButton("Generate Morbidity Report");
+        reportBtn.setFont(font);
+        actionsPanel.add(reportBtn);
+
+        reportBtn.addActionListener(e -> {
+            controller.generateMorbidityReport();
+            JOptionPane.showMessageDialog(
+              frame,
+              "Morbidity report generated successfully.",
+              "Report Created",
+              JOptionPane.INFORMATION_MESSAGE
+            );
+        });
+        
         JButton pastVisitsBtn = new JButton("View Past Visits"); pastVisitsBtn.setFont(font);
         actionsPanel.add(pastVisitsBtn);
         frame.add(actionsPanel, BorderLayout.SOUTH);

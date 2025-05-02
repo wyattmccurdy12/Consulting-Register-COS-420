@@ -68,7 +68,7 @@ public class Clinic {
      * Generates an outpatient morbidity report for the current month and writes it to a CSV file.
      */
     public void generateMorbidityReport() {
-        String[] diseases = loadDiseasesFromFile("data/diseases.txt");
+        String[] diseases = loadDiseasesFromFile("archive/iteration_3/data/diseases.txt");
         if (diseases == null) {
             return; // Exit if diseases file could not be loaded
         }
